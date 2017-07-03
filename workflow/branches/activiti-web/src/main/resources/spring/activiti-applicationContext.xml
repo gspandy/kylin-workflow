@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>jdbc:mysql://localhost:3306/activiti?useUnicode=true&amp;characterEncoding=utf-8</value>
+		</property>
+		<property name="user">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>root2014</value>
+		</property>
+		<property name="minPoolSize">
+			<value>10</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>500</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>10</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>25000</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>5</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>30</value>
+		</property>
+		<property name="acquireRetryDelay">
+			<value>1000</value>
+		</property>
+		<property name="testConnectionOnCheckin">
+			<value>false</value>
+		</property>
+		<property name="automaticTestTable">
+			<value>t_c3p0</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>18000</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>5000</value>
+		</property>
+	</bean>
+
+	<!-- 配置sqlSessionFactory -->
+	<!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean> -->
+
+	<!-- 配置事务 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="databaseSchemaUpdate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
+		<property name="history" value="full"></property>
+		<!-- 主键生成策略 -->
+		<!-- <property name="idGenerator"><bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" /></property> -->
+	</bean>
+
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<bean id="repositoryService" factory-bean="processEngine"
+		factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine"
+		factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine"
+		factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine"
+		factory-method="getHistoryService" />
+	<bean id="managementService" factory-bean="processEngine"
+		factory-method="getManagementService" />
+
+
+</beans>

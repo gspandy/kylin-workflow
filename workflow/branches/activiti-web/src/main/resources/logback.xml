@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">
+-->
+<configuration scan="true" scanPeriod="30 seconds">
+	
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/myactiviti.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/activiti.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="org.mybatis.spring" level="INFO" />
+	<logger name="org.apache.ibatis" level="TRACE" />
+	<logger name="java.sql.PreparedStatement" level="INFO" />
+	<logger name="java.sql.Statement" level="INFO" />
+	<logger name="java.sql.Connection" level="INFO" />
+	<logger name="java.sql.ResultSet" level="INFO" />
+	
+	
+	<logger name="com.alibaba" level="INFO" />
+	<logger name="org.apache.zookeeper" level="INFO" />
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.springframework.transaction" level="DEBUG" />
+
+    <root level="DEBUG">
+    	<appender-ref ref="console" />
+        <appender-ref ref="logFile" />
+    </root>
+</configuration>
